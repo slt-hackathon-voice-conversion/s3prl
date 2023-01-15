@@ -61,6 +61,15 @@ class Loss(nn.Module):
 
 class DownstreamExpert(nn.Module):
     def __init__(self, upstream_dim, upstream_rate, downstream_expert, expdir, **kwargs):
+        """
+
+        Args:
+            upstream_dim:
+            upstream_rate:
+            downstream_expert:
+            expdir:
+            **kwargs:
+        """
         super(DownstreamExpert, self).__init__()
         
         # basic settings

@@ -34,6 +34,7 @@ class VCC2020Dataset(Dataset):
 
         X = []
         if split == 'train' or split == 'dev':
+            #File path /home/data1/work/s3prl/s3prl/downstream/a2o-vc-vcc2020/data/lists/
             file_list = open(os.path.join(lists_root, self.trg_lang + "_" + split + '_list.txt')).read().splitlines()
             for number in file_list:
                 wav_path = os.path.join(data_root, trgspk, number + ".wav")

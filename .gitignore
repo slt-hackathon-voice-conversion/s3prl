@@ -157,6 +157,7 @@ experiment
 *.tar.gz
 *.tsv
 *.txt
+*.wav
 
 # doc
 docs/build

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*- #
 """*********************************************************************************************"""
+from s3prl.nn.rnn import downsample
+
 #   FileName     [ model.py ]
 #   Synopsis     [ the simple (LSTMP), simple-AR and taco2-AR models for any-to-one voice conversion ]
 #   Reference    [ `WaveNet Vocoder with Limited Training Data for Voice Conversion`, Interspeech 2018 ]
