@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*- #
 """*********************************************************************************************"""
+
 #   FileName     [ dataset.py ]
 #   Synopsis     [ The VCC2020 dataset ]
 #   Author       [ Wen-Chin Huang (https://github.com/unilight) ]
@@ -12,6 +13,7 @@ import random
 
 import librosa
 import numpy as np
+import pandas as pd
 
 import torch
 import torch.nn as nn
@@ -19,7 +21,13 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data.dataset import Dataset
 
 import torchaudio
-from .utils import logmelspectrogram
+
+# TODO Fix importing error
+# from .utils import logmelspectrogram
+
+
+import generate_directory_list
+
 
 SRCSPKS = ["SEF1", "SEF2", "SEM1", "SEM2"]
 FS = 16000 # Always resample to 16kHz
@@ -90,16 +98,29 @@ class VCC2020Dataset(Dataset):
         return wavs, wavs_2, acoustic_features, acoustic_features_padded, acoustic_feature_lengths, wav_paths
 
 
-class CustomDataset(Dataset):
-    def __init__(self, eval_list_file, **kwargs):
-        super(CustomDataset, self).__init__()
+class TorgoDataset(Dataset):
+    def __init__(self, split, trgspk, fbank_config, train_dev_seed, **kwargs):
+        if os.path.isfile("transcripts.csv") == False:
+            generate_directory_list.check_transcripts("./*/*0*/Session*/prompts/*.txt")
+
+        self.trgspk = trgspk
+
+        df = pd.read_csv("transcripts.csv")
+
+
+        super(TorgoDataset, self).__init__()
 
         X = []
-        if os.path.isfile(eval_list_file):
-            print("[Dataset] Reading custom eval list file: {}".format(eval_list_file))
-            X = open(eval_list_file, "r").read().splitlines()
+        if split == "train" or split == "dev":
+            df = df.loc[df["speaker_ids"] == trgspk]
+
+            directory_list = df["directory"].values.tolist()
+            for file in directory_list:
+                if os.path.isfile(file):
+                    X.append(file)
+
         else:
-            raise ValueError("[Dataset] eval list file does not exist: {}".format(eval_list_file))
+            raise ValueError("[Dataset] eval list file does not exist: {}")
         print('[Dataset] - number of data for custom test: ' + str(len(X)))
         self.X = X
 
@@ -126,3 +147,8 @@ class CustomDataset(Dataset):
         wav_paths = [sorted_batch[i][2] for i in range(bs)]
         
         return wavs, wavs_2, None, None, None, wav_paths
+
+
+
+    def get_all_file_paths(self):
+        return self.X

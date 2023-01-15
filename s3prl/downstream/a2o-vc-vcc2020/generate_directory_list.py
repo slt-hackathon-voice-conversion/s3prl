@@ -109,5 +109,5 @@ def check_transcripts(file_path):
     print(df.head())
 
 
-if __name__ == "__main__":
-    check_transcripts("./*/*0*/Session*/prompts/*.txt")
+# if __name__ == "__main__":
+#     check_transcripts("./*/*0*/Session*/prompts/*.txt")
