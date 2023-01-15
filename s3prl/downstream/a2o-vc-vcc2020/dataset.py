@@ -117,7 +117,7 @@ class TorgoDataset(Dataset):
             directory_list = df["directory"].values.tolist()
             for file in directory_list:
                 if os.path.isfile(file):
-                    X.append(file)
+                    X.append(os.path.abspath(file))
 
         else:
             raise ValueError("[Dataset] eval list file does not exist: {}")
