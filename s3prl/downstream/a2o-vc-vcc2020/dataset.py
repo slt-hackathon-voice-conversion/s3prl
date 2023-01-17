@@ -23,7 +23,8 @@ from torch.utils.data.dataset import Dataset
 import torchaudio
 
 # TODO Fix importing error
-# from .utils import logmelspectrogram
+# Originally from .utils import logmelspectrogram
+from utils import logmelspectrogram
 
 
 import generate_directory_list
@@ -98,8 +99,19 @@ class VCC2020Dataset(Dataset):
         return wavs, wavs_2, acoustic_features, acoustic_features_padded, acoustic_feature_lengths, wav_paths
 
 
+TORGO_SRCSPKS = ["F01", "F03", "F04", "M01", "M02", "M03", "M04", "M05"]
 class TorgoDataset(Dataset):
     def __init__(self, split, trgspk, fbank_config, train_dev_seed, **kwargs):
+
+        """
+
+        Args:
+            split: Which part of the dataset being requested (train, dev or test)
+            trgspk: Which speaker we are trying to convert to
+            fbank_config:
+            train_dev_seed: How you would like the data shuffled.
+            **kwargs:
+        """
         if os.path.isfile("transcripts.csv") == False:
             generate_directory_list.check_transcripts("./*/*0*/Session*/prompts/*.txt")
 
@@ -107,13 +119,23 @@ class TorgoDataset(Dataset):
 
         df = pd.read_csv("transcripts.csv")
 
-
+        self.df = df
         super(TorgoDataset, self).__init__()
 
         X = []
         if split == "train" or split == "dev":
             df = df.loc[df["speaker_ids"] == trgspk]
 
+            directory_list = df["directory"].values.tolist()
+            for file in directory_list:
+                if os.path.isfile(file):
+                    X.append(os.path.abspath(file))
+
+            random.seed(train_dev_seed)
+            random.shuffle(X)
+
+        elif split == "test":
+            df = df.loc[(df["general_ids"] != "FC") & (df["general_ids"] != "MC")]
             directory_list = df["directory"].values.tolist()
             for file in directory_list:
                 if os.path.isfile(file):
