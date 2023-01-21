@@ -64,16 +64,36 @@ def process_csv_file(df_dys, df_nondys, gender):
 
     df_res.to_csv("total_summary.csv", index=False)
 
+def many_to_one(trgspk: str, df: pd.DataFrame):
+
+    trgspk_df = df.loc[df["speaker_ids"] == trgspk]
+
+
+    trgspk_df = trgspk_df.drop_duplicates(subset=["transcripts"])
+    print(trgspk_df.shape[0])
+
+
+
+    df = df.loc[(df["general_ids"] != "MC") & (df["general_ids"] != "FC")]
+
+    print(df.shape[0])
+    output = df.merge(trgspk_df, on="transcripts")
+    output.to_csv(f"{trgspk}_paired.csv", index=False)
+
+
 
 if __name__ == "__main__":
     df = pd.read_csv("transcripts.csv")
-    df = df.sample(frac=1, random_state=0).reset_index(drop=True)
-    print(df.head())
-    df_dysF = df.loc[df["general_ids"] == "F"]
-    df_nondysF = df.loc[df["general_ids"] == "FC"]
 
-    df_dysM = df.loc[df["general_ids"] == "M"]
-    df_nondysM = df.loc[df["general_ids"] == "MC"]
-    print(df_nondysM.head())
-    process_csv_file(df_dysF, df_nondysF, "F")
-    process_csv_file(df_dysM, df_nondysM, "M")
+    many_to_one("MC01", df)
+
+    # df = df.sample(frac=1, random_state=0).reset_index(drop=True)
+    # print(df.head())
+    # df_dysF = df.loc[df["general_ids"] == "F"]
+    # df_nondysF = df.loc[df["general_ids"] == "FC"]
+    #
+    # df_dysM = df.loc[df["general_ids"] == "M"]
+    # df_nondysM = df.loc[df["general_ids"] == "MC"]
+    # print(df_nondysM.head())
+    # process_csv_file(df_dysF, df_nondysF, "F")
+    # process_csv_file(df_dysM, df_nondysM, "M")
