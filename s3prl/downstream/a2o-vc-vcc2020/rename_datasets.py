@@ -6,6 +6,8 @@ import glob
 import librosa
 import soundfile as sf
 from math import floor, ceil
+from sklearn.model_selection import train_test_split
+
 
 """
 Modified from: https://github.com/lesterphillip/torgo_vc
@@ -64,7 +66,16 @@ def process_csv_file(df_dys, df_nondys, gender):
 
     df_res.to_csv("total_summary.csv", index=False)
 
-def many_to_one(trgspk: str, df: pd.DataFrame):
+def many_to_one(trgspk: str, df: pd.DataFrame, random_seed: int):
+    """
+
+    Args:
+        trgspk: Target speaker that the train/dev split is being made for
+        df: Dataframe of all speech samples
+
+    Returns: Dataframe
+
+    """
 
     trgspk_df = df.loc[df["speaker_ids"] == trgspk]
 
@@ -72,20 +83,22 @@ def many_to_one(trgspk: str, df: pd.DataFrame):
     trgspk_df = trgspk_df.drop_duplicates(subset=["transcripts"])
     print(trgspk_df.shape[0])
 
-
-
     df = df.loc[(df["general_ids"] != "MC") & (df["general_ids"] != "FC")]
 
-    print(df.shape[0])
+    df = df.drop_duplicates(subset=["speaker_ids","transcripts"])
+
     output = df.merge(trgspk_df, on="transcripts")
     output.to_csv(f"{trgspk}_paired.csv", index=False)
 
-
+    train, test = train_test_split(output, test_size=0.2, random_state=random_seed)
+    return train, test
 
 if __name__ == "__main__":
     df = pd.read_csv("transcripts.csv")
 
-    many_to_one("MC01", df)
+    train, test = many_to_one("MC02", df, 2)
+    print(train.shape[0])
+    print(test.shape[0])
 
     # df = df.sample(frac=1, random_state=0).reset_index(drop=True)
     # print(df.head())
