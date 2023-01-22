@@ -90,13 +90,14 @@ def many_to_one(trgspk: str, df: pd.DataFrame, random_seed: int):
     output = df.merge(trgspk_df, on="transcripts")
     output.to_csv(f"{trgspk}_paired.csv", index=False)
 
+    # TODO Train test split. How to split up the transcripts other than randomly
     train, test = train_test_split(output, test_size=0.2, random_state=random_seed)
     return train, test
 
 if __name__ == "__main__":
     df = pd.read_csv("transcripts.csv")
 
-    train, test = many_to_one("MC02", df, 2)
+    train, test = many_to_one("FC01", df, 2)
     print(train.shape[0])
     print(test.shape[0])
 
