@@ -97,7 +97,7 @@ def many_to_one(trgspk: str, df: pd.DataFrame, random_seed: int):
 if __name__ == "__main__":
     df = pd.read_csv("transcripts.csv")
 
-    train, test = many_to_one("FC01", df, 2)
+    train, test = many_to_one("MC01", df, 2)
     print(train.shape[0])
     print(test.shape[0])
 

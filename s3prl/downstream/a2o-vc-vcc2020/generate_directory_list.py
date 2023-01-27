@@ -109,5 +109,56 @@ def check_transcripts(file_path):
     print(df.head())
 
 
-# if __name__ == "__main__":
+def generate_directory_uaspeech(file_path: str):
+    """
+
+    Args:
+        file_path: "./data/UASpeech/audio/*/*/*.wav"
+
+    Returns:
+
+    """
+
+    # ./data/UASpeech/audio/original/M07/M07_B3_CW88_M7.wav
+    all_audio_files = glob.glob(file_path, recursive=True)
+
+    general_ids = []
+    spkr_ids = []
+    word_ids = []
+    mic = []
+    directories = []
+
+    file_duration = []
+
+
+    for audio_file in tqdm(all_audio_files):
+        file_path = audio_file.replace("\\", "/")
+
+        print(file_path)
+        split_path = file_path.split("/")
+
+        try:
+            duration, wav_location = check_utt_length(file_path)
+            file_duration.append(duration)
+            directories.append(wav_location)
+
+        except FileNotFoundError as e:
+            file_duration.append(np.NaN)
+            directories.append(np.NaN)
+
+    df = pd.DataFrame({
+        "general_ids": general_ids,
+        "speaker_ids": spkr_ids,
+        "directory": directories,
+        "word_ids": word_ids,
+        "mic": mic,
+        "duration": file_duration
+    })
+
+
+    print(all_audio_files[0:10])
+
+if __name__ == "__main__":
 #     check_transcripts("./*/*0*/Session*/prompts/*.txt")
+    print("Hello World")
+    generate_directory_uaspeech("./data/UASpeech/audio/original/*/*.wav")
