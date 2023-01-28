@@ -5,7 +5,8 @@
 
 from dataset import TorgoDataset
 from dataset import VCC2020Dataset
-
+from rename_datasets import torgo_transcript_matching
+import pandas as pd
 
 def test_vcc_data():
     # FBANK is not an int
@@ -23,6 +24,17 @@ def test_torgo_data():
 
     print(file_paths)
     print(len(file_paths))
+
+def test_many_to_one():
+
+
+    df = pd.read_csv("transcripts.csv")
+
+    train, test = torgo_transcript_matching("FC03", df, 2, "M01")
+    print("\n")
+    print(train.shape[0])
+    print(test.shape[0])
+
 
 def main():
 

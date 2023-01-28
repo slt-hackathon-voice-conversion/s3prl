@@ -109,18 +109,18 @@ def check_transcripts(file_path):
     print(df.head())
 
 
-def generate_directory_uaspeech(file_path: str):
+def generate_directory_uaspeech(audio_file_path: str, transcript_file_path: str):
     """
 
     Args:
-        file_path: "./data/UASpeech/audio/*/*/*.wav"
+        audio_file_path: "./data/UASpeech/audio/*/*/*.wav"
 
     Returns:
 
     """
 
     # ./data/UASpeech/audio/original/M07/M07_B3_CW88_M7.wav
-    all_audio_files = glob.glob(file_path, recursive=True)
+    all_audio_files = glob.glob(audio_file_path, recursive=True)
 
     general_ids = []
     spkr_ids = []
@@ -132,13 +132,24 @@ def generate_directory_uaspeech(file_path: str):
 
 
     for audio_file in tqdm(all_audio_files):
-        file_path = audio_file.replace("\\", "/")
+        audio_file_path = audio_file.replace("\\", "/")
 
-        print(file_path)
-        split_path = file_path.split("/")
+        # print(file_path)
+        split_path = audio_file_path.split("/")
+        context = split_path[6].split("_")
+
+        if context[0][0].lower() == "c":
+            general_ids.append(context[0][0:2])
+        else:
+            general_ids.append(context[0][0])
+
+        spkr_ids.append(context[0])
+        word_ids.append(context[2])
+        mic.append(context[3].split(".")[0])
+
 
         try:
-            duration, wav_location = check_utt_length(file_path)
+            duration, wav_location = check_utt_length(audio_file_path)
             file_duration.append(duration)
             directories.append(wav_location)
 
@@ -158,7 +169,8 @@ def generate_directory_uaspeech(file_path: str):
 
     print(all_audio_files[0:10])
 
-if __name__ == "__main__":
-#     check_transcripts("./*/*0*/Session*/prompts/*.txt")
-    print("Hello World")
-    generate_directory_uaspeech("./data/UASpeech/audio/original/*/*.wav")
+#
+# if __name__ == "__main__":
+# #     check_transcripts("./*/*0*/Session*/prompts/*.txt")
+#     print("Hello World")
+#     generate_directory_uaspeech("./data/UASpeech/audio/original/*/*.wav")

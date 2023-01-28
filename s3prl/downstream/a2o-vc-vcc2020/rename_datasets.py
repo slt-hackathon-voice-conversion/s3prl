@@ -66,24 +66,36 @@ def process_csv_file(df_dys, df_nondys, gender):
 
     df_res.to_csv("total_summary.csv", index=False)
 
-def many_to_one(trgspk: str, df: pd.DataFrame, random_seed: int):
+def torgo_transcript_matching(trgspk: str, df: pd.DataFrame, random_seed: int, src_speaker:str = "na"):
     """
-
+    Function maps Torgo speech based on the transcript from either many to one or one to one
     Args:
         trgspk: Target speaker that the train/dev split is being made for
         df: Dataframe of all speech samples
 
-    Returns: Dataframe
+        df: Dataset that is being split
 
+        random_seed: Seed number for the train test split
+
+        src_speaker: If the mapping is going to be one to one instead of many to one, include a src speaker.
+
+    Returns: Train test split dataframe
     """
 
+    if trgspk not in df["speaker_ids"].values:
+        raise ValueError("Target speaker not in dataset")
+
     trgspk_df = df.loc[df["speaker_ids"] == trgspk]
-
-
     trgspk_df = trgspk_df.drop_duplicates(subset=["transcripts"])
-    print(trgspk_df.shape[0])
 
-    df = df.loc[(df["general_ids"] != "MC") & (df["general_ids"] != "FC")]
+    if src_speaker != "na":
+        if src_speaker in df["speaker_ids"].values:
+            df = df.loc[df["speaker_ids"] == src_speaker]
+        else:
+            raise ValueError("Source speaker not in dataset")
+
+    else:
+        df = df.loc[(df["general_ids"] != "MC") & (df["general_ids"] != "FC")]
 
     df = df.drop_duplicates(subset=["speaker_ids","transcripts"])
 
@@ -94,12 +106,15 @@ def many_to_one(trgspk: str, df: pd.DataFrame, random_seed: int):
     train, test = train_test_split(output, test_size=0.2, random_state=random_seed)
     return train, test
 
-if __name__ == "__main__":
-    df = pd.read_csv("transcripts.csv")
 
-    train, test = many_to_one("MC01", df, 2)
-    print(train.shape[0])
-    print(test.shape[0])
+
+
+# if __name__ == "__main__":
+#     df = pd.read_csv("transcripts.csv")
+#
+#     train, test = many_to_one("MC01", df, 2)
+#     print(train.shape[0])
+#     print(test.shape[0])
 
     # df = df.sample(frac=1, random_state=0).reset_index(drop=True)
     # print(df.head())
