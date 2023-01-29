@@ -5,6 +5,7 @@
 
 from dataset import TorgoDataset
 from dataset import VCC2020Dataset
+from generate_directory_list import  generate_directory_uaspeech
 from rename_datasets import torgo_transcript_matching
 import pandas as pd
 
@@ -26,7 +27,11 @@ def test_torgo_data():
     print(len(file_paths))
 
 def test_many_to_one():
+    """
+    Test Torgo many to one function
+    Returns:
 
+    """
 
     df = pd.read_csv("transcripts.csv")
 
@@ -34,6 +39,10 @@ def test_many_to_one():
     print("\n")
     print(train.shape[0])
     print(test.shape[0])
+
+
+def test_UAspeech_transcript_generator():
+    generate_directory_uaspeech("./data/UASpeech/audio/original/*/*.wav", "./data/UASpeech/doc/speaker_wordlist.xls")
 
 
 def main():
