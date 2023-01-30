@@ -100,11 +100,15 @@ def torgo_transcript_matching(trgspk: str, df: pd.DataFrame, random_seed: int, s
     df = df.drop_duplicates(subset=["speaker_ids","transcripts"])
 
     output = df.merge(trgspk_df, on="transcripts")
+
+
     output.to_csv(f"{trgspk}_paired.csv", index=False)
 
     # TODO Train test split. How to split up the transcripts other than randomly
     train, test = train_test_split(output, test_size=0.2, random_state=random_seed)
     return train, test
+
+
 
 
 

@@ -17,7 +17,7 @@ def main():
             "Usage:\n"
             "1. s3prl-main [PROBLEM] -h\n"
             "2. python3 -m s3prl.main [PROBLEM] -h\n"
-            "3. python3 s3prl/main.py [PROBLEM] -h\n"
+            "3. python3 s3prl/test.py [PROBLEM] -h\n"
             "\nPROBLEM should be an available class name in the s3prl.problem package.\n"
             f"Available options: {', '.join(available_problems)}"
         )

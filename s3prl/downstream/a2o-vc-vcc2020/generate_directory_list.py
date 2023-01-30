@@ -75,15 +75,21 @@ def check_transcripts(file_path):
         file_ = og_file.replace("\\", "/")
         f_ = open(file_, "r")
 
+        transcript_prompt = f_.read()
+        transcript_prompt = transcript_prompt.strip("\n")
+
+        if(transcript_prompt.split("/")[0] == "input"):
+            continue
+        else:
+            transcripts.append(transcript_prompt)
+
         general_id = file_.split("/")[1]
         general_ids.append(general_id)
 
         spkr_id = file_.split("/")[2]
         spkr_ids.append(spkr_id)
 
-        transcript_prompt = f_.read()
-        transcript_prompt = transcript_prompt.strip("\n")
-        transcripts.append(transcript_prompt)
+
 
         utt_type.append(define_utt_type(transcript_prompt))
 
@@ -148,7 +154,10 @@ def generate_directory_uaspeech(audio_file_path: str, transcript_file_path: str)
         context = split_path[6].split("_")
 
         if context[0][0].lower() == "c":
-            general_ids.append(context[0][0:2])
+            if context[0][1].lower() == "m":
+                general_ids.append("MC")
+            else:
+                general_ids.append("FC")
         else:
             general_ids.append(context[0][0])
 
@@ -167,6 +176,7 @@ def generate_directory_uaspeech(audio_file_path: str, transcript_file_path: str)
             duration = librosa.get_duration(y=y, sr=sr)
             file_duration.append(duration)
 
+
         except FileNotFoundError as e:
             file_duration.append(np.NaN)
             directories.append(np.NaN)
@@ -183,10 +193,13 @@ def generate_directory_uaspeech(audio_file_path: str, transcript_file_path: str)
 
     df = merge_uaspeech_audio_transcripts(df, transcript_file_paths)
 
-    df.to_csv("UAspeech_transcripts")
+    df.to_csv("UAspeech_transcripts.csv", index=False)
+    return df
 
 def merge_uaspeech_audio_transcripts(df: pandas.DataFrame, transcript_file_paths: pandas.DataFrame):
     output = pd.merge(df, transcript_file_paths, left_on="word_ids", right_on="FILE NAME", how="left")
+    output = output.drop(columns = ["FILE NAME"])
+    output = output.rename(columns = {"WORD" : "transcripts"})
     return output
 
 #
