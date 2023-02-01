@@ -21,6 +21,11 @@ def test_torgo_data():
 
 
 def test_torgo_transcript():
+    """
+    Test generating the transcript.csv file for torgo
+    Returns:
+
+    """
     check_transcripts("./data/torgo/*/*0*/Session*/prompts/*.txt")
 def test_many_to_one():
     """
@@ -38,6 +43,11 @@ def test_many_to_one():
 
 
 def test_UAspeech_transcript_generator():
+    """
+    Test generating UAspeech_transcript.csv
+    Returns:
+
+    """
     generate_directory_uaspeech("./data/UASpeech/audio/original/*/*.wav", "./data/UASpeech/doc/speaker_wordlist.xls")
 
 

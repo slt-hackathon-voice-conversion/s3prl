@@ -83,10 +83,10 @@ def check_transcripts(file_path):
         else:
             transcripts.append(transcript_prompt)
 
-        general_id = file_.split("/")[1]
+        general_id = file_.split("/")[3]
         general_ids.append(general_id)
 
-        spkr_id = file_.split("/")[2]
+        spkr_id = file_.split("/")[4]
         spkr_ids.append(spkr_id)
 
 
@@ -118,10 +118,10 @@ def check_transcripts(file_path):
 
 def generate_directory_uaspeech(audio_file_path: str, transcript_file_path: str):
     """
-
+    File path for where the UAspeech data is.
     Args:
         audio_file_path: "./data/UASpeech/audio/*/*/*.wav"
-    Returns:
+    Returns: nothing. Generates csv file called UAspeech_transcripts.csv
 
     """
 
