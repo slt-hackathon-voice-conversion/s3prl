@@ -66,7 +66,7 @@ def process_csv_file(df_dys, df_nondys, gender):
 
     df_res.to_csv("total_summary.csv", index=False)
 
-def torgo_transcript_matching(trgspk: str, df: pd.DataFrame, random_seed: int, src_speaker:str = "na"):
+def spkr_transcript_matching(trgspk: str, df: pd.DataFrame, random_seed: int, src_speaker:str = "na"):
     """
     Function maps Torgo speech based on the transcript from either many to one or one to one
     Args:

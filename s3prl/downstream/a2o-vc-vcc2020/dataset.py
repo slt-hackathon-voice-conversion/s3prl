@@ -113,7 +113,7 @@ class TorgoDataset(Dataset):
             **kwargs:
         """
         if os.path.isfile("transcripts.csv") == False:
-            generate_directory_list.check_transcripts("./*/*0*/Session*/prompts/*.txt")
+            generate_directory_list.check_transcripts("./data/torgo/*/*0*/Session*/prompts/*.txt")
 
         self.trgspk = trgspk
 

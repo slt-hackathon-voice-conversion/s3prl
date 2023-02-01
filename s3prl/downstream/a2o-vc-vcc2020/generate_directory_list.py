@@ -51,8 +51,8 @@ def define_utt_type(transcript_prompt):
 
 def check_transcripts(file_path):
     """
-
-    :param file_path: Parent file path of the speech
+    Generates CSV file with the audio files and transcriopts matching
+    :param file_path: Parent file path of the speech. ./*/*0*/Session*/prompts/*.txt"
     :return: Nothing returned. transcripts.csv file generated
     """
 
@@ -121,7 +121,6 @@ def generate_directory_uaspeech(audio_file_path: str, transcript_file_path: str)
 
     Args:
         audio_file_path: "./data/UASpeech/audio/*/*/*.wav"
-
     Returns:
 
     """
