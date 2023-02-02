@@ -151,7 +151,7 @@ def generate_directory_uaspeech(audio_file_path: str, transcript_file_path: str)
 
         # print(file_path)
         split_path = audio_file_path.split("/")
-        context = split_path[6].split("_")
+        context = split_path[-1].split("_")
 
         if context[0][0].lower() == "c":
             if context[0][1].lower() == "m":
@@ -170,7 +170,7 @@ def generate_directory_uaspeech(audio_file_path: str, transcript_file_path: str)
 
 
         try:
-            directories.append(audio_file_path)
+            directories.append(os.path.abspath(audio_file_path))
 
             y, sr = librosa.load(audio_file_path, 16000)
             duration = librosa.get_duration(y=y, sr=sr)
